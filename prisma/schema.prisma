@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  id          String             @id @default(cuid())
+  name        String
+  niche       String
+  platforms   String[]
+  avatarColor String             @default("#6366f1")
+  createdAt   DateTime           @default(now())
+  content     ContentItem[]
+  trends      TrendAlert[]
+  giveaways   GiveawayCampaign[]
+}
+
+model ContentItem {
+  id          String    @id @default(cuid())
+  profileId   String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  caption     String
+  hashtags    String[]
+  platform    String
+  status      String    @default("draft")
+  contentType String    @default("post")
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  mediaUrl    String?
+  createdAt   DateTime  @default(now())
+}
+
+model TrendAlert {
+  id          String   @id @default(cuid())
+  profileId   String
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  keyword     String
+  trendScore  Float    @default(0)
+  platform    String
+  detectedAt  DateTime @default(now())
+  actionTaken Boolean  @default(false)
+}
+
+model CardListing {
+  id             String   @id @default(cuid())
+  player         String
+  set            String
+  year           Int
+  grade          Float?
+  soldPrice      Float
+  sourcePlatform String   @default("ebay")
+  soldAt         DateTime
+  sourceUrl      String
+  createdAt      DateTime @default(now())
+}
+
+model GiveawayCampaign {
+  id            String   @id @default(cuid())
+  profileId     String
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title         String
+  prize         String
+  entryMechanic String
+  postCopy      String
+  hashtags      String[]
+  status        String   @default("draft")
+  createdAt     DateTime @default(now())
+}

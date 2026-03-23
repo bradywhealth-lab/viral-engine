@@ -1,0 +1,57 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BarChart3, Flame, Gift, LayoutDashboard, LibraryBig, ListTodo, Radar } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/content", label: "Content Queue", icon: ListTodo },
+  { href: "/trends", label: "Trend Scanner", icon: Radar },
+  { href: "/cards", label: "Cards Suite", icon: LibraryBig },
+  { href: "/giveaways", label: "Giveaways", icon: Gift },
+  { href: "/analytics", label: "Analytics", icon: BarChart3 },
+];
+
+export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+  const pathname = usePathname();
+
+  return (
+    <nav className="space-y-2">
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = pathname === item.href;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={cn(
+              "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+              isActive ? "bg-amber-500 text-zinc-950" : "text-zinc-300 hover:bg-zinc-800 hover:text-white",
+            )}
+          >
+            <Icon className="h-4 w-4" />
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
+export function SidebarBrand() {
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/80 p-4">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 text-zinc-950">
+        <Flame className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="text-xs uppercase tracking-[0.24em] text-zinc-500">Creator OS</p>
+        <h1 className="font-semibold text-white">{process.env.NEXT_PUBLIC_APP_NAME ?? "Viral Content Miner"}</h1>
+      </div>
+    </div>
+  );
+}
