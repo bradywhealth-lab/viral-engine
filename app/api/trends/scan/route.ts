@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { openai } from "@/lib/openai";
+import { getOpenAI } from "@/lib/openai";
 import { getPrisma } from "@/lib/prisma";
 
 const schema = z.object({
@@ -26,6 +26,7 @@ export async function POST(request: Request) {
   try {
     const body = schema.parse(await request.json());
     const prisma = await getPrisma();
+    const openai = getOpenAI();
     const firecrawlResponse = await fetch("https://api.firecrawl.dev/v1/search", {
       method: "POST",
       headers: {

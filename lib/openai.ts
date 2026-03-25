@@ -4,12 +4,16 @@ const globalForOpenAI = globalThis as unknown as {
   openai: OpenAI | undefined;
 };
 
-export const openai =
-  globalForOpenAI.openai ??
-  new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+export function getOpenAI() {
+  const apiKey = process.env.OPENAI_API_KEY;
 
-if (process.env.NODE_ENV !== "production") {
-  globalForOpenAI.openai = openai;
+  if (!apiKey) {
+    throw new Error("OPENAI_API_KEY is not configured");
+  }
+
+  if (!globalForOpenAI.openai) {
+    globalForOpenAI.openai = new OpenAI({ apiKey });
+  }
+
+  return globalForOpenAI.openai;
 }

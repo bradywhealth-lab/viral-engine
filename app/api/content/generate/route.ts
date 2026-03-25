@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { openai } from "@/lib/openai";
+import { getOpenAI } from "@/lib/openai";
 
 const schema = z.object({
   profileId: z.string().min(1),
@@ -26,6 +26,7 @@ const responseSchema = z.object({
 export async function POST(request: Request) {
   try {
     const body = schema.parse(await request.json());
+    const openai = getOpenAI();
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       response_format: { type: "json_object" },
