@@ -7,12 +7,14 @@ import { ProfileSwitcher } from "@/components/profile-switcher";
 import { SidebarBrand, SidebarNav } from "@/components/sidebar-nav";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/toaster";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
+      <Toaster />
       <div className="mx-auto flex min-h-screen w-full max-w-[1600px]">
         <aside className="hidden w-80 border-r border-zinc-900 bg-zinc-900/80 px-5 py-6 lg:flex lg:flex-col">
           <SidebarBrand />

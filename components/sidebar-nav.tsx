@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Flame, Gift, LayoutDashboard, LibraryBig, ListTodo, Radar } from "lucide-react";
+import { BarChart3, Flame, Gift, LayoutDashboard, LibraryBig, ListTodo, Radar, Search, Settings, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -12,7 +12,10 @@ const navItems = [
   { href: "/trends", label: "Trend Scanner", icon: Radar },
   { href: "/cards", label: "Cards Suite", icon: LibraryBig },
   { href: "/giveaways", label: "Giveaways", icon: Gift },
+  { href: "/accounts", label: "Accounts", icon: Users },
+  { href: "/research", label: "Research", icon: Search },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
