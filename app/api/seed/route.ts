@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { getFallbackProfiles } from "@/lib/default-data";
+import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getPrisma } from "@/lib/prisma";
 
 const defaults = [
@@ -47,6 +49,13 @@ export async function POST() {
     return NextResponse.json(profiles);
   } catch (error) {
     console.error(error);
+
+    if (isDatabaseUnavailable(error)) {
+      return NextResponse.json(getFallbackProfiles(), {
+        headers: { "x-data-source": "fallback" },
+      });
+    }
+
     return NextResponse.json({ error: "Failed to seed profiles" }, { status: 500 });
   }
 }
