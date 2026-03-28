@@ -12,6 +12,7 @@ export function isDatabaseUnavailable(error: unknown) {
     message.includes("relation") ||
     message.includes("database url") ||
     message.includes("datasource") ||
-    message.includes("prismaclientinitializationerror")
+    message.includes("prismaclientinitializationerror") ||
+    message.includes("prismaclientconstructorvalidationerror")
   );
 }

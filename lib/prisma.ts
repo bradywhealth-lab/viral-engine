@@ -1,23 +1,24 @@
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma/client";
+
 const globalForPrisma = globalThis as unknown as {
-  prisma: any;
+  prisma: PrismaClient;
 };
 
-async function createPrismaClient() {
-  const prismaModule = await import("@prisma/client");
-  const PrismaClientCtor = (prismaModule as any).PrismaClient ?? (prismaModule as any).default?.PrismaClient;
+function createPrismaClient(): PrismaClient {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaPg(pool);
 
-  if (!PrismaClientCtor) {
-    throw new Error("PrismaClient constructor not found in @prisma/client module.");
-  }
-
-  return new PrismaClientCtor({
+  return new PrismaClient({
+    adapter,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 }
 
-export async function getPrisma() {
+export async function getPrisma(): Promise<PrismaClient> {
   if (!globalForPrisma.prisma) {
-    globalForPrisma.prisma = await createPrismaClient();
+    globalForPrisma.prisma = createPrismaClient();
   }
 
   return globalForPrisma.prisma;
