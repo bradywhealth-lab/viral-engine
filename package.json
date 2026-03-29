@@ -6,10 +6,12 @@
     "dev": "node node_modules/next/dist/bin/next dev",
     "build": "node node_modules/next/dist/bin/next build --webpack",
     "start": "node node_modules/next/dist/bin/next start",
-    "lint": "node node_modules/eslint/bin/eslint.js . --ext .js,.jsx,.ts,.tsx"
+    "lint": "node node_modules/eslint/bin/eslint.js . --ext .js,.jsx,.ts,.tsx",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^7.5.0",
+    "@prisma/adapter-pg": "7.5.0",
+    "@prisma/client": "7.5.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-select": "^2.2.6",
@@ -27,7 +29,8 @@
     "next": "^16.2.1",
     "openai": "^6.32.0",
     "postcss": "^8.5.8",
-    "prisma": "^7.5.0",
+    "pg": "^8.13.0",
+    "prisma": "7.5.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "recharts": "^3.8.0",
@@ -38,6 +41,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0"
+    "@types/node": "^25.5.0",
+    "dotenv": "^16.4.0"
   }
 }
