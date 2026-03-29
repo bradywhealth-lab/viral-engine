@@ -24,15 +24,24 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       const response = await fetch("/api/profiles", { cache: "no-store" });
-      const data = (await response.json()) as ProfileSummary[];
+      const payload: unknown = await response.json();
+      const data = Array.isArray(payload) ? (payload as ProfileSummary[]) : [];
       setProfiles(data);
+
+      if (!response.ok) {
+        console.error("Failed to refresh profiles", payload);
+      }
 
       const storedId = window.localStorage.getItem("selectedProfileId");
       const nextId = data.some((profile) => profile.id === storedId) ? storedId ?? "" : data[0]?.id ?? "";
-      if (nextId) {
-        setSelectedProfileIdState(nextId);
-        window.localStorage.setItem("selectedProfileId", nextId);
-      }
+      setSelectedProfileIdState(nextId);
+      if (nextId) window.localStorage.setItem("selectedProfileId", nextId);
+      if (!nextId) window.localStorage.removeItem("selectedProfileId");
+    } catch (error) {
+      console.error("Unexpected error while refreshing profiles", error);
+      setProfiles([]);
+      setSelectedProfileIdState("");
+      window.localStorage.removeItem("selectedProfileId");
     } finally {
       setIsLoading(false);
     }

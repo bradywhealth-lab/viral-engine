@@ -29,18 +29,35 @@ export function DashboardPage() {
 
     const loadDashboard = async () => {
       setIsLoading(true);
-      await fetch("/api/seed", { method: "POST" });
-      await refreshProfiles();
-      const [profilesResponse, alertsResponse] = await Promise.all([
-        fetch("/api/profiles", { cache: "no-store" }),
-        fetch("/api/trends", { cache: "no-store" }),
-      ]);
+      try {
+        const seedResponse = await fetch("/api/seed", { method: "POST" });
+        if (!seedResponse.ok) {
+          console.error("Failed to seed default profiles", await seedResponse.json());
+        }
 
-      if (cancelled) return;
+        await refreshProfiles();
+        const [profilesResponse, alertsResponse] = await Promise.all([
+          fetch("/api/profiles", { cache: "no-store" }),
+          fetch("/api/trends", { cache: "no-store" }),
+        ]);
 
-      setProfiles((await profilesResponse.json()) as ProfileSummary[]);
-      setAlerts((await alertsResponse.json()) as TrendAlert[]);
-      setIsLoading(false);
+        if (cancelled) return;
+
+        const profilesPayload: unknown = await profilesResponse.json();
+        const alertsPayload: unknown = await alertsResponse.json();
+        setProfiles(Array.isArray(profilesPayload) ? (profilesPayload as ProfileSummary[]) : []);
+        setAlerts(Array.isArray(alertsPayload) ? (alertsPayload as TrendAlert[]) : []);
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Failed to load dashboard data", error);
+          setProfiles([]);
+          setAlerts([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
     };
 
     void loadDashboard();
