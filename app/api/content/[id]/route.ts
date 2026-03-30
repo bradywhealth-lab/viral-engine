@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getPrisma } from "@/lib/prisma";
 
 const updateSchema = z.object({
@@ -31,6 +32,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json(content);
   } catch (error) {
     console.error(error);
+    if (isDatabaseUnavailable(error)) {
+      return NextResponse.json(
+        { error: "Database unavailable." },
+        { status: 503, headers: { "x-data-source": "fallback" } },
+      );
+    }
     return NextResponse.json({ error: "Failed to update content item" }, { status: 400 });
   }
 }
@@ -43,6 +50,12 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(error);
+    if (isDatabaseUnavailable(error)) {
+      return NextResponse.json(
+        { error: "Database unavailable." },
+        { status: 503, headers: { "x-data-source": "fallback" } },
+      );
+    }
     return NextResponse.json({ error: "Failed to delete content item" }, { status: 400 });
   }
 }

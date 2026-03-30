@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getOpenAI } from "@/lib/openai";
 import { getPrisma } from "@/lib/prisma";
 
@@ -40,16 +41,24 @@ export async function POST(request: Request) {
     });
 
     const result = resultSchema.parse(JSON.parse(completion.choices[0]?.message?.content ?? "{}"));
-    await prisma.giveawayCampaign.create({
-      data: {
-        profileId: body.profileId,
-        title: result.title,
-        prize: body.prize,
-        entryMechanic: result.entryMechanic,
-        postCopy: result.postCopy,
-        hashtags: result.hashtags,
-      },
-    });
+    try {
+      await prisma.giveawayCampaign.create({
+        data: {
+          profileId: body.profileId,
+          title: result.title,
+          prize: body.prize,
+          entryMechanic: result.entryMechanic,
+          postCopy: result.postCopy,
+          hashtags: result.hashtags,
+        },
+      });
+    } catch (persistError) {
+      console.error(persistError);
+      if (isDatabaseUnavailable(persistError)) {
+        return NextResponse.json(result, { headers: { "x-data-source": "fallback" } });
+      }
+      throw persistError;
+    }
 
     return NextResponse.json(result);
   } catch (error) {

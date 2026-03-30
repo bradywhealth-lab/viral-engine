@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getPrisma } from "@/lib/prisma";
 
 const schema = z.object({
@@ -19,7 +20,6 @@ function parsePrice(text: string) {
 export async function POST(request: Request) {
   try {
     const body = schema.parse(await request.json());
-    const prisma = await getPrisma();
     const firecrawlResponse = await fetch("https://api.firecrawl.dev/v1/search", {
       method: "POST",
       headers: {
@@ -54,26 +54,40 @@ export async function POST(request: Request) {
     const trendDirection =
       listings.length > 1 && listings[0].soldPrice >= listings[listings.length - 1].soldPrice ? "up" : "down";
 
-    await Promise.all(
-      listings
-        .filter((listing) => listing.soldPrice > 0)
-        .map((listing) =>
-          prisma.cardListing.create({
-            data: {
-              player: body.player,
-              set: body.set,
-              year: body.year,
-              grade: body.grade ?? null,
-              soldPrice: listing.soldPrice,
-              soldAt: new Date(listing.soldAt),
-              sourceUrl: listing.sourceUrl,
-              sourcePlatform: listing.sourcePlatform,
-            },
-          }),
-        ),
-    );
+    let usedFallback = false;
+    try {
+      const prisma = await getPrisma();
+      await Promise.all(
+        listings
+          .filter((listing) => listing.soldPrice > 0)
+          .map((listing) =>
+            prisma.cardListing.create({
+              data: {
+                player: body.player,
+                set: body.set,
+                year: body.year,
+                grade: body.grade ?? null,
+                soldPrice: listing.soldPrice,
+                soldAt: new Date(listing.soldAt),
+                sourceUrl: listing.sourceUrl,
+                sourcePlatform: listing.sourcePlatform,
+              },
+            }),
+          ),
+      );
+    } catch (persistError) {
+      console.error(persistError);
+      if (isDatabaseUnavailable(persistError)) {
+        usedFallback = true;
+      } else {
+        throw persistError;
+      }
+    }
 
-    return NextResponse.json({ listings, averagePrice, trendDirection });
+    return NextResponse.json(
+      { listings, averagePrice, trendDirection },
+      usedFallback ? { headers: { "x-data-source": "fallback" } } : undefined,
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Failed to search card listings" }, { status: 500 });

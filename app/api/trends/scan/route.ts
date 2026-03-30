@@ -1,6 +1,8 @@
+import type { TrendAlert } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getOpenAI } from "@/lib/openai";
 import { getPrisma } from "@/lib/prisma";
 
@@ -25,7 +27,6 @@ function extractHashtags(...sources: string[]) {
 export async function POST(request: Request) {
   try {
     const body = schema.parse(await request.json());
-    const prisma = await getPrisma();
     const openai = getOpenAI();
     const firecrawlResponse = await fetch("https://api.firecrawl.dev/v1/search", {
       method: "POST",
@@ -84,16 +85,31 @@ export async function POST(request: Request) {
       })
       .parse(JSON.parse(ideaCompletion.choices[0]?.message?.content ?? "{\"ideas\":[]}")).ideas;
 
-    const alert = await prisma.trendAlert.create({
-      data: {
-        profileId: body.profileId,
-        keyword: body.keyword,
-        platform: body.platform,
-        trendScore,
-      },
-    });
+    let alert: TrendAlert | null = null;
+    let usedFallback = false;
+    try {
+      const prisma = await getPrisma();
+      alert = await prisma.trendAlert.create({
+        data: {
+          profileId: body.profileId,
+          keyword: body.keyword,
+          platform: body.platform,
+          trendScore,
+        },
+      });
+    } catch (persistError) {
+      console.error(persistError);
+      if (isDatabaseUnavailable(persistError)) {
+        usedFallback = true;
+      } else {
+        throw persistError;
+      }
+    }
 
-    return NextResponse.json({ trendScore, hashtags, ideas, alert });
+    return NextResponse.json(
+      { trendScore, hashtags, ideas, alert },
+      usedFallback ? { headers: { "x-data-source": "fallback" } } : undefined,
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Failed to scan trends" }, { status: 500 });
