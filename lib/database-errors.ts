@@ -18,7 +18,13 @@ export function isDatabaseUnavailable(error: unknown) {
   }
 
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    return DATABASE_UNAVAILABLE_CODES.has(error.code);
+    if (DATABASE_UNAVAILABLE_CODES.has(error.code)) {
+      return true;
+    }
+    // pg adapter / driver can surface connection failures with OS-style codes (not P####).
+    if (error.code === "ECONNREFUSED" || error.code === "ETIMEDOUT" || error.code === "ENOTFOUND") {
+      return true;
+    }
   }
 
   if (error instanceof Error) {
