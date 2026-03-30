@@ -28,21 +28,25 @@ export async function POST(request: Request) {
   try {
     const body = schema.parse(await request.json());
     const openai = getOpenAI();
-    const firecrawlResponse = await fetch("https://api.firecrawl.dev/v1/search", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.FIRECRAWL_API_KEY ?? ""}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: `${body.keyword} ${body.niche} trending ${body.platform}`,
-        limit: 5,
-      }),
-    });
 
-    const searchData = (await firecrawlResponse.json()) as {
-      data?: Array<{ title?: string; description?: string; markdown?: string; url?: string }>;
-    };
+    const firecrawlApiKey = process.env.FIRECRAWL_API_KEY;
+    const searchData = firecrawlApiKey
+      ? ((await fetch("https://api.firecrawl.dev/v1/search", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${firecrawlApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: `${body.keyword} ${body.niche} trending ${body.platform}`,
+            limit: 5,
+          }),
+        }).then((response) => response.json())) as {
+          data?: Array<{ title?: string; description?: string; markdown?: string; url?: string }>;
+        })
+      : ({ data: [] } as {
+          data?: Array<{ title?: string; description?: string; markdown?: string; url?: string }>;
+        });
 
     const results = searchData.data ?? [];
     const trendScore = Math.min(100, results.length * 20);
@@ -83,7 +87,8 @@ export async function POST(request: Request) {
           }),
         ),
       })
-      .parse(JSON.parse(ideaCompletion.choices[0]?.message?.content ?? "{\"ideas\":[]}")).ideas;
+      .parse(JSON.parse(ideaCompletion.choices[0]?.message?.content ?? '{"ideas":[]}'))
+      .ideas;
 
     let alert: TrendAlert | null = null;
     let usedFallback = false;
