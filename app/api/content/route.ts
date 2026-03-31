@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getPrisma } from "@/lib/prisma";
 
 const contentSchema = z.object({
@@ -29,6 +30,9 @@ export async function GET(request: Request) {
     return NextResponse.json(content);
   } catch (error) {
     console.error(error);
+    if (isDatabaseUnavailable(error)) {
+      return NextResponse.json([], { headers: { "x-data-source": "fallback" } });
+    }
     return NextResponse.json({ error: "Failed to fetch content" }, { status: 500 });
   }
 }
@@ -48,6 +52,12 @@ export async function POST(request: Request) {
     return NextResponse.json(content, { status: 201 });
   } catch (error) {
     console.error(error);
+    if (isDatabaseUnavailable(error)) {
+      return NextResponse.json(
+        { error: "Database unavailable; content was not saved." },
+        { status: 503, headers: { "x-data-source": "fallback" } },
+      );
+    }
     return NextResponse.json({ error: "Failed to create content item" }, { status: 400 });
   }
 }
