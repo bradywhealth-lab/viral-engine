@@ -114,7 +114,7 @@ export function AccountsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-semibold text-white">Accounts</h1>
-          <p className="mt-1 text-sm text-zinc-400">Manage your social media accounts and automation settings.</p>
+          <p className="mt-1 text-sm text-[#8899bb]">Manage your social media accounts and automation settings.</p>
         </div>
         <Card className="border-red-500/30 bg-red-900/10">
           <CardContent className="p-6">
@@ -133,7 +133,7 @@ export function AccountsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-white">Accounts</h1>
-          <p className="mt-1 text-sm text-zinc-400">Manage your social media accounts and automation settings.</p>
+          <p className="mt-1 text-sm text-[#8899bb]">Manage your social media accounts and automation settings.</p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)} size="sm">
           <Plus className="mr-2 h-4 w-4" />
@@ -224,7 +224,7 @@ export function AccountsPage() {
                       return (
                         <div
                           key={platform}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1a2540] text-[#f0f4ff]/80"
                         >
                           <Icon className="h-4 w-4" />
                         </div>
@@ -235,15 +235,15 @@ export function AccountsPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-zinc-400">Posts</span>
+                  <span className="text-[#8899bb]">Posts</span>
                   <span className="text-white">{account.postCount}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-zinc-400">Followers</span>
+                  <span className="text-[#8899bb]">Followers</span>
                   <span className="text-white">{account.followerCount.toLocaleString()}</span>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs text-zinc-400">Automation Mode</Label>
+                  <Label className="text-xs text-[#8899bb]">Automation Mode</Label>
                   <div className="flex gap-1">
                     {(["full", "semi", "manual"] as AutomationMode[]).map((mode) => (
                       <Button

@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
 
-import { AppShell } from "@/components/app-shell";
+import { ConditionalShell } from "@/components/conditional-shell";
 import { ProfileProvider } from "@/components/profile-provider";
 
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_APP_NAME ?? "Viral Content Miner",
-  description: "AI trend scanner, content queue, card suite, giveaways, and analytics.",
+  title: process.env.NEXT_PUBLIC_APP_NAME ?? "Viral Engine Views",
+  description: "Mine trends. Create content. Dominate your niche.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="bg-zinc-950 text-white antialiased">
+      <body className="bg-[#0f1623] text-[#f0f4ff] antialiased">
         <ProfileProvider>
-          <AppShell>{children}</AppShell>
+          <ConditionalShell>{children}</ConditionalShell>
         </ProfileProvider>
       </body>
     </html>
