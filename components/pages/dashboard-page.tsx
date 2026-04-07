@@ -30,23 +30,33 @@ export function DashboardPage() {
     const loadDashboard = async () => {
       setIsLoading(true);
       try {
-        const seedResponse = await fetch("/api/seed", { method: "POST" });
-        if (!seedResponse.ok) {
-          console.error("Failed to seed default profiles", await seedResponse.json());
+        // Seed only if profiles are empty — checked via profiles API first
+        const profilesResponse = await fetch("/api/profiles", { cache: "no-store" });
+        if (cancelled) return;
+        const profilesPayload: unknown = await profilesResponse.json();
+        const existingProfiles = Array.isArray(profilesPayload) ? (profilesPayload as ProfileSummary[]) : [];
+
+        // Only seed if no profiles exist yet
+        if (existingProfiles.length === 0) {
+          await fetch("/api/seed", { method: "POST" });
+          if (cancelled) return;
+          // Refresh profiles after seeding
+          const seededResponse = await fetch("/api/profiles", { cache: "no-store" });
+          if (cancelled) return;
+          const seededPayload: unknown = await seededResponse.json();
+          setProfiles(Array.isArray(seededPayload) ? (seededPayload as ProfileSummary[]) : []);
+        } else {
+          setProfiles(existingProfiles);
         }
 
-        await refreshProfiles();
-        const [profilesResponse, alertsResponse] = await Promise.all([
-          fetch("/api/profiles", { cache: "no-store" }),
-          fetch("/api/trends", { cache: "no-store" }),
-        ]);
-
+        // Load alerts independently
+        const alertsResponse = await fetch("/api/trends", { cache: "no-store" });
         if (cancelled) return;
-
-        const profilesPayload: unknown = await profilesResponse.json();
         const alertsPayload: unknown = await alertsResponse.json();
-        setProfiles(Array.isArray(profilesPayload) ? (profilesPayload as ProfileSummary[]) : []);
         setAlerts(Array.isArray(alertsPayload) ? (alertsPayload as TrendAlert[]) : []);
+
+        // Sync profile provider without triggering extra re-renders
+        await refreshProfiles();
       } catch (error) {
         if (!cancelled) {
           console.error("Failed to load dashboard data", error);
