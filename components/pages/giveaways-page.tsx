@@ -38,7 +38,7 @@ export function GiveawaysPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold text-white">Giveaways</h1>
-        <p className="mt-1 text-sm text-zinc-400">Generated campaign concepts and copy for {selectedProfile?.name ?? "the active profile"}.</p>
+        <p className="mt-1 text-sm text-[#8899bb]">Generated campaign concepts and copy for {selectedProfile?.name ?? "the active profile"}.</p>
       </div>
 
       <Card>
@@ -50,21 +50,21 @@ export function GiveawaysPage() {
           {loading ? (
             Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full" />)
           ) : items.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-zinc-800 p-8 text-sm text-zinc-500">No giveaways yet for this profile.</div>
+            <div className="rounded-2xl border border-dashed border-[#1e2d45] p-8 text-sm text-[#8899bb]">No giveaways yet for this profile.</div>
           ) : (
             items.map((item) => (
-              <div key={item.id} className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <div key={item.id} className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/70 p-5">
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div>
                     <h3 className="font-semibold text-white">{item.title}</h3>
-                    <p className="mt-1 text-sm text-zinc-400">{item.prize}</p>
+                    <p className="mt-1 text-sm text-[#8899bb]">{item.prize}</p>
                   </div>
                   <Badge variant={item.status === "draft" ? "warning" : "secondary"} className="capitalize">
                     {item.status}
                   </Badge>
                 </div>
-                <p className="mt-4 text-sm leading-6 text-zinc-300">{item.postCopy}</p>
-                <p className="mt-4 text-sm text-zinc-400">Entry mechanic: {item.entryMechanic}</p>
+                <p className="mt-4 text-sm leading-6 text-[#f0f4ff]/80">{item.postCopy}</p>
+                <p className="mt-4 text-sm text-[#8899bb]">Entry mechanic: {item.entryMechanic}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {item.hashtags.map((tag) => (
                     <Badge key={tag} variant="outline">

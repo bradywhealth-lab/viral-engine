@@ -93,7 +93,7 @@ export function ContentQueuePage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-white">Content Queue</h1>
-          <p className="mt-1 text-sm text-zinc-400">Draft, schedule, and generate ideas for the selected profile.</p>
+          <p className="mt-1 text-sm text-[#8899bb]">Draft, schedule, and generate ideas for the selected profile.</p>
         </div>
         {selectedProfileId ? <ContentFormDrawer profileId={selectedProfileId} onCreated={loadContent} /> : null}
       </div>
@@ -114,13 +114,13 @@ export function ContentQueuePage() {
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             {ideas.map((idea) => (
-              <div key={idea.title} className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4">
+              <div key={idea.title} className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/70 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="font-semibold text-white">{idea.title}</h3>
                   <Badge variant="secondary">{idea.estimatedReach}</Badge>
                 </div>
                 <Textarea className="mt-3 min-h-[110px]" value={idea.caption} readOnly />
-                <p className="mt-3 text-sm text-zinc-400">{formatHashtags(idea.hashtags)}</p>
+                <p className="mt-3 text-sm text-[#8899bb]">{formatHashtags(idea.hashtags)}</p>
                 <div className="mt-4 flex items-center justify-between">
                   <Badge variant="outline" className="capitalize">
                     {idea.contentType}
@@ -162,7 +162,7 @@ export function ContentQueuePage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full text-left text-sm">
-                <thead className="text-zinc-500">
+                <thead className="text-[#8899bb]">
                   <tr>
                     <th className="pb-3">Caption</th>
                     <th className="pb-3">Platform</th>
@@ -171,10 +171,10 @@ export function ContentQueuePage() {
                     <th className="pb-3">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800">
+                <tbody className="divide-y divide-[#1e2d45]">
                   {filteredItems.map((item) => (
                     <tr key={item.id}>
-                      <td className="py-4 pr-4 text-zinc-200">{item.caption.slice(0, 84)}{item.caption.length > 84 ? "..." : ""}</td>
+                      <td className="py-4 pr-4 text-[#f0f4ff]/90">{item.caption.slice(0, 84)}{item.caption.length > 84 ? "..." : ""}</td>
                       <td className="py-4 pr-4">
                         <Badge variant="outline" className="capitalize">
                           {item.platform}
@@ -185,7 +185,7 @@ export function ContentQueuePage() {
                           {item.status}
                         </Badge>
                       </td>
-                      <td className="py-4 pr-4 text-zinc-400">{item.scheduledAt ? format(new Date(item.scheduledAt), "MMM d, yyyy h:mm a") : "Not set"}</td>
+                      <td className="py-4 pr-4 text-[#8899bb]">{item.scheduledAt ? format(new Date(item.scheduledAt), "MMM d, yyyy h:mm a") : "Not set"}</td>
                       <td className="py-4">
                         <Button
                           variant="ghost"
@@ -202,7 +202,7 @@ export function ContentQueuePage() {
                   ))}
                 </tbody>
               </table>
-              {filteredItems.length === 0 ? <div className="py-8 text-center text-zinc-500">No content found for this status.</div> : null}
+              {filteredItems.length === 0 ? <div className="py-8 text-center text-[#8899bb]">No content found for this status.</div> : null}
             </div>
           )}
         </CardContent>

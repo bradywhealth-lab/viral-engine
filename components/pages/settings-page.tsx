@@ -144,7 +144,7 @@ export function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold text-white">Settings</h1>
-        <p className="mt-1 text-sm text-zinc-400">Manage your API keys, notifications, and automation preferences.</p>
+        <p className="mt-1 text-sm text-[#8899bb]">Manage your API keys, notifications, and automation preferences.</p>
       </div>
 
       <Tabs defaultValue="api-keys">
@@ -203,7 +203,7 @@ export function SettingsPage() {
                     </Button>
                   </div>
                   {config.value && (
-                    <p className="text-xs text-zinc-500">
+                    <p className="text-xs text-[#8899bb]">
                       Currently set: {config.show ? config.value : maskKey(config.value)}
                     </p>
                   )}
@@ -221,10 +221,10 @@ export function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               {notifications.map((setting) => (
-                <div key={setting.id} className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950/70 p-4">
+                <div key={setting.id} className="flex items-center justify-between rounded-xl border border-[#1e2d45] bg-[#0f1623]/70 p-4">
                   <div className="flex-1">
                     <p className="font-medium text-white">{setting.label}</p>
-                    <p className="mt-1 text-sm text-zinc-400">{setting.description}</p>
+                    <p className="mt-1 text-sm text-[#8899bb]">{setting.description}</p>
                   </div>
                   <Switch
                     checked={setting.enabled}
@@ -267,7 +267,7 @@ export function SettingsPage() {
               {platformSettings.map((setting) => (
                 <div
                   key={setting.platform}
-                  className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-950/70 p-4"
+                  className="flex items-center justify-between rounded-xl border border-[#1e2d45] bg-[#0f1623]/70 p-4"
                 >
                   <div>
                     <p className="font-medium text-white">{setting.platform}</p>

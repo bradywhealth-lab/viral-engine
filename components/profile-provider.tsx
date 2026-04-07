@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import type { ProfileSummary } from "@/lib/types";
 
@@ -20,7 +20,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [selectedProfileId, setSelectedProfileIdState] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const refreshProfiles = async () => {
+  const refreshProfiles = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await fetch("/api/profiles", { cache: "no-store" });
@@ -45,11 +45,11 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     void refreshProfiles();
-  }, []);
+  }, [refreshProfiles]);
 
   const setSelectedProfileId = (profileId: string) => {
     setSelectedProfileIdState(profileId);
@@ -67,7 +67,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       refreshProfiles,
       setSelectedProfileId,
     }),
-    [profiles, selectedProfileId, selectedProfile, isLoading],
+    [profiles, selectedProfileId, selectedProfile, isLoading, refreshProfiles],
   );
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

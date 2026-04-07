@@ -13,15 +13,15 @@ export function ProfileSwitcher() {
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 p-3">
-      <label htmlFor="profile-switcher" className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-zinc-500">
+    <div className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/80 p-3">
+      <label htmlFor="profile-switcher" className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#8899bb]">
         <Sparkles className="h-3.5 w-3.5" />
         Active Profile
       </label>
       <div className="relative">
         <select
           id="profile-switcher"
-          className="h-11 w-full appearance-none rounded-xl border border-zinc-800 bg-zinc-900 px-3 pr-10 text-sm text-white outline-none ring-0"
+          className="h-11 w-full appearance-none rounded-xl border border-[#1e2d45] bg-[#141e2e] px-3 pr-10 text-sm text-[#f0f4ff] outline-none ring-0"
           value={selectedProfileId}
           onChange={(event) => setSelectedProfileId(event.target.value)}
         >
@@ -31,7 +31,7 @@ export function ProfileSwitcher() {
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-3.5 h-4 w-4 text-zinc-500" />
+        <ChevronDown className="pointer-events-none absolute right-3 top-3.5 h-4 w-4 text-[#8899bb]" />
       </div>
     </div>
   );

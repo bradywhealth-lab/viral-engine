@@ -86,7 +86,7 @@ export function ResearchPage() {
 
   const getGrowthScoreColor = (score: number) => {
     if (score >= 80) return "bg-emerald-500";
-    if (score >= 60) return "bg-amber-500";
+    if (score >= 60) return "bg-[#4f8ef7]";
     return "bg-red-500";
   };
 
@@ -94,7 +94,7 @@ export function ResearchPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold text-white">Research</h1>
-        <p className="mt-1 text-sm text-zinc-400">Discover untapped niches and find sports card auction opportunities.</p>
+        <p className="mt-1 text-sm text-[#8899bb]">Discover untapped niches and find sports card auction opportunities.</p>
       </div>
 
       <Tabs defaultValue="niches">
@@ -141,10 +141,10 @@ export function ResearchPage() {
                     <CardDescription>
                       <div className="mt-2">
                         <div className="mb-1 flex justify-between text-xs">
-                          <span className="text-zinc-400">Growth Score</span>
+                          <span className="text-[#8899bb]">Growth Score</span>
                           <span className="text-white">{niche.growthScore}%</span>
                         </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-800">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-[#1a2540]">
                           <div
                             className={`h-full ${getGrowthScoreColor(niche.growthScore)}`}
                             style={{ width: `${niche.growthScore}%` }}
@@ -168,8 +168,8 @@ export function ResearchPage() {
                       <p className="mb-2 text-sm font-medium text-white">Content Ideas</p>
                       <ul className="space-y-1">
                         {niche.contentIdeas.map((idea, i) => (
-                          <li key={i} className="flex items-start text-sm text-zinc-300">
-                            <span className="mr-2 text-amber-500">•</span>
+                          <li key={i} className="flex items-start text-sm text-[#f0f4ff]/80">
+                            <span className="mr-2 text-[#4f8ef7]">•</span>
                             {idea}
                           </li>
                         ))}
@@ -224,7 +224,7 @@ export function ResearchPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-zinc-800 text-left text-sm text-zinc-400">
+                      <tr className="border-b border-[#1e2d45] text-left text-sm text-[#8899bb]">
                         <th className="pb-3 pr-4">Card Name</th>
                         <th className="pb-3 pr-4">Set</th>
                         <th className="pb-3 pr-4">Year</th>
@@ -236,19 +236,19 @@ export function ResearchPage() {
                     </thead>
                     <tbody className="text-sm">
                       {auctionResults.map((result) => (
-                        <tr key={result.id} className="border-b border-zinc-800/50">
+                        <tr key={result.id} className="border-b border-[#1e2d45]/50">
                           <td className="py-3 pr-4 font-medium text-white">{result.player}</td>
-                          <td className="py-3 pr-4 text-zinc-300">{result.set}</td>
-                          <td className="py-3 pr-4 text-zinc-300">{result.year}</td>
-                          <td className="py-3 pr-4 text-zinc-300">{result.grade}</td>
+                          <td className="py-3 pr-4 text-[#f0f4ff]/80">{result.set}</td>
+                          <td className="py-3 pr-4 text-[#f0f4ff]/80">{result.year}</td>
+                          <td className="py-3 pr-4 text-[#f0f4ff]/80">{result.grade}</td>
                           <td className="py-3 pr-4 font-medium text-emerald-400">${result.soldPrice.toLocaleString()}</td>
-                          <td className="py-3 pr-4 text-zinc-300">{result.soldAt}</td>
+                          <td className="py-3 pr-4 text-[#f0f4ff]/80">{result.soldAt}</td>
                           <td className="py-3">
                             <a
                               href={result.sourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center text-amber-500 hover:text-amber-400"
+                              className="inline-flex items-center text-[#4f8ef7] hover:text-[#38bdf8]"
                             >
                               <ExternalLink className="h-4 w-4" />
                             </a>

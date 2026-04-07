@@ -51,7 +51,7 @@ export function CardsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold text-white">Cards Suite</h1>
-        <p className="mt-1 text-sm text-zinc-400">Search sold comps, track average pricing, and generate a campaign-ready giveaway in one screen.</p>
+        <p className="mt-1 text-sm text-[#8899bb]">Search sold comps, track average pricing, and generate a campaign-ready giveaway in one screen.</p>
       </div>
 
       <Card>
@@ -99,12 +99,12 @@ export function CardsPage() {
               <CardTitle>Market Snapshot</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
-                <p className="text-sm text-zinc-400">Average Price</p>
+              <div className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/70 p-5">
+                <p className="text-sm text-[#8899bb]">Average Price</p>
                 <p className="mt-2 text-4xl font-semibold text-white">${result.averagePrice.toFixed(2)}</p>
               </div>
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
-                <p className="text-sm text-zinc-400">Trend Direction</p>
+              <div className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/70 p-5">
+                <p className="text-sm text-[#8899bb]">Trend Direction</p>
                 <div className="mt-2 flex items-center gap-3">
                   {result.trendDirection === "up" ? (
                     <ArrowUpRight className="h-6 w-6 text-emerald-400" />
@@ -122,7 +122,7 @@ export function CardsPage() {
             </CardHeader>
             <CardContent className="overflow-x-auto">
               <table className="min-w-full text-left text-sm">
-                <thead className="text-zinc-500">
+                <thead className="text-[#8899bb]">
                   <tr>
                     <th className="pb-3">Listing</th>
                     <th className="pb-3">Price</th>
@@ -130,14 +130,14 @@ export function CardsPage() {
                     <th className="pb-3">Source</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800">
+                <tbody className="divide-y divide-[#1e2d45]">
                   {result.listings.map((listing) => (
                     <tr key={listing.id}>
-                      <td className="py-4 pr-4 text-zinc-200">{listing.title}</td>
+                      <td className="py-4 pr-4 text-[#f0f4ff]/90">{listing.title}</td>
                       <td className="py-4 pr-4 text-white">${listing.soldPrice.toFixed(2)}</td>
-                      <td className="py-4 pr-4 text-zinc-400">{new Date(listing.soldAt).toLocaleDateString()}</td>
+                      <td className="py-4 pr-4 text-[#8899bb]">{new Date(listing.soldAt).toLocaleDateString()}</td>
                       <td className="py-4">
-                        <a className="text-amber-300 hover:text-amber-200" href={listing.sourceUrl} target="_blank" rel="noreferrer">
+                        <a className="text-[#38bdf8] hover:text-[#38bdf8]/80" href={listing.sourceUrl} target="_blank" rel="noreferrer">
                           {listing.sourcePlatform}
                         </a>
                       </td>
@@ -194,12 +194,12 @@ export function CardsPage() {
             {giveawayLoading ? (
               <Skeleton className="h-56 w-full" />
             ) : giveaway ? (
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
+              <div className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/70 p-5">
                 <Textarea value={giveaway.postCopy} readOnly className="min-h-[180px]" />
-                <p className="mt-4 text-sm text-zinc-300">
+                <p className="mt-4 text-sm text-[#f0f4ff]/80">
                   <span className="font-medium text-white">Entry:</span> {giveaway.entryMechanic}
                 </p>
-                <p className="mt-2 text-sm text-zinc-300">
+                <p className="mt-2 text-sm text-[#f0f4ff]/80">
                   <span className="font-medium text-white">CTA:</span> {giveaway.callToAction}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -211,7 +211,7 @@ export function CardsPage() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-dashed border-zinc-800 p-6 text-sm text-zinc-500">Generated giveaway copy will appear here.</div>
+              <div className="rounded-2xl border border-dashed border-[#1e2d45] p-6 text-sm text-[#8899bb]">Generated giveaway copy will appear here.</div>
             )}
           </div>
         </CardContent>

@@ -33,7 +33,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
             className={cn(
               "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors",
-              isActive ? "bg-amber-500 text-zinc-950" : "text-zinc-300 hover:bg-zinc-800 hover:text-white",
+              isActive ? "bg-[#4f8ef7] text-white" : "text-[#8899bb] hover:bg-[#1a2540] hover:text-[#f0f4ff]",
             )}
           >
             <Icon className="h-4 w-4" />
@@ -47,13 +47,13 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 
 export function SidebarBrand() {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/80 p-4">
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 text-zinc-950">
+    <div className="flex items-center gap-3 rounded-2xl border border-[#1e2d45] bg-[#0f1623]/80 p-4">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4f8ef7] via-[#38bdf8] to-[#4f8ef7] text-white">
         <Flame className="h-5 w-5" />
       </div>
       <div>
-        <p className="text-xs uppercase tracking-[0.24em] text-zinc-500">Creator OS</p>
-        <h1 className="font-semibold text-white">{process.env.NEXT_PUBLIC_APP_NAME ?? "Viral Content Miner"}</h1>
+        <p className="text-xs uppercase tracking-[0.24em] text-[#8899bb]">Creator OS</p>
+        <h1 className="font-semibold text-[#f0f4ff]">{process.env.NEXT_PUBLIC_APP_NAME ?? "Viral Engine Views"}</h1>
       </div>
     </div>
   );
