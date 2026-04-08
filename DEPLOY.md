@@ -1,62 +1,84 @@
-# Deploy Viral Content Miner
+# Deploy Viral Engine Views on Hostinger VPS
 
-## Prerequisites
+## Root cause that kept it offline
 
-- Node.js 18+
-- Vercel account
-- GitHub repository
+The repo was still documented for Vercel deployment, but the VPS had no active process manager entry, no nginx vhost pointing at the app, and nothing listening for traffic. There was also no clean production PM2 config checked in for a server deploy path.
 
-## Environment Variables
+## Runtime requirements
 
-Set these in Vercel dashboard or `.env.local` for local development:
+- Node.js 20+
+- PM2 installed on the VPS
+- nginx vhost/proxy configured to forward to the app port
+- Environment variables present in `/home/deployer/apps/viral-engine/.env`
 
-```
-DATABASE_URL=your_database_url
-OPENAI_API_KEY=your_openai_key
-FIRECRAWL_API_KEY=your_firecrawl_key
-```
-
-Optional:
-```
-INSTAGRAM_ACCESS_TOKEN=
-TIKTOK_CLIENT_KEY=
-YOUTUBE_API_KEY=
-```
-
-## Deploy via Vercel CLI
+## Required environment variables
 
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy to production
-vercel --prod
-
-# Or deploy to preview
-vercel
+DATABASE_URL=postgresql://...
+OPENAI_API_KEY=sk-...
+FIRECRAWL_API_KEY=fc-...
+NEXT_PUBLIC_APP_NAME=Viral Engine Views
+PORT=3001
+HOSTNAME=0.0.0.0
 ```
 
-## Deploy via GitHub
+## App build and process setup
 
-1. Push code to GitHub
-2. Import project in Vercel dashboard
-3. Configure environment variables
-4. Deploy
+Run from `/home/deployer/apps/viral-engine`:
 
-## Database Setup
+```bash
+npm install
+npm run build
+pm2 start ecosystem.config.js --update-env
+pm2 save
+```
 
-The app uses Prisma with SQLite by default. For production, consider PostgreSQL:
+## Recommended nginx site
 
-1. Add a Vercel Postgres database
-2. Update `DATABASE_URL` environment variable
-3. Run `npx prisma migrate deploy`
+Point the live hostname to the Next.js app on port `3001`:
 
-## Verify Deployment
+```nginx
+server {
+    server_name viralengineviews.com www.viralengineviews.com;
 
-Visit `/api/health` to check deployment status.
+    location / {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+After the site file is added:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/viral-engine /etc/nginx/sites-enabled/viral-engine
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+## Verification
+
+```bash
+curl http://127.0.0.1:3001/api/health
+curl -I https://viralengineviews.com
+pm2 status viral-engine
+```
+
+Expected app health response:
+
+```json
+{"status":"ok","timestamp":"...","service":"viral-content-miner"}
+```
 
 ## Troubleshooting
 
-- Build fails: Check environment variables are set
-- API errors: Verify API keys are valid
-- Database issues: Run `npx prisma migrate deploy`
+- Build fails: run `npm install` and re-run `npm run build`
+- Lint fails: run `npm run lint` and fix reported issues
+- Prisma/runtime issues: verify `DATABASE_URL` in `.env`
+- Site still not public: nginx vhost or DNS is still missing/mispointed
