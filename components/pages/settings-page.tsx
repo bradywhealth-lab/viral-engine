@@ -143,8 +143,8 @@ export function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold text-white">Settings</h1>
-        <p className="mt-1 text-sm text-[#8899bb]">Manage your API keys, notifications, and automation preferences.</p>
+        <h1 className="text-3xl font-semibold text-[#2f2418]">Settings</h1>
+        <p className="mt-1 text-sm text-[#8a7a67]">Manage your API keys, notifications, and automation preferences.</p>
       </div>
 
       <Tabs defaultValue="api-keys">
@@ -203,7 +203,7 @@ export function SettingsPage() {
                     </Button>
                   </div>
                   {config.value && (
-                    <p className="text-xs text-[#8899bb]">
+                    <p className="text-xs text-[#8a7a67]">
                       Currently set: {config.show ? config.value : maskKey(config.value)}
                     </p>
                   )}
@@ -221,10 +221,10 @@ export function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               {notifications.map((setting) => (
-                <div key={setting.id} className="flex items-center justify-between rounded-xl border border-[#1e2d45] bg-[#0f1623]/70 p-4">
+                <div key={setting.id} className="flex items-center justify-between rounded-xl border border-[#e2d6c2] bg-[#fffaf2] p-4">
                   <div className="flex-1">
-                    <p className="font-medium text-white">{setting.label}</p>
-                    <p className="mt-1 text-sm text-[#8899bb]">{setting.description}</p>
+                    <p className="font-medium text-[#2f2418]">{setting.label}</p>
+                    <p className="mt-1 text-sm text-[#8a7a67]">{setting.description}</p>
                   </div>
                   <Switch
                     checked={setting.enabled}
@@ -267,10 +267,10 @@ export function SettingsPage() {
               {platformSettings.map((setting) => (
                 <div
                   key={setting.platform}
-                  className="flex items-center justify-between rounded-xl border border-[#1e2d45] bg-[#0f1623]/70 p-4"
+                  className="flex items-center justify-between rounded-xl border border-[#e2d6c2] bg-[#fffaf2] p-4"
                 >
                   <div>
-                    <p className="font-medium text-white">{setting.platform}</p>
+                    <p className="font-medium text-[#2f2418]">{setting.platform}</p>
                     <Badge variant="outline" className="mt-2">
                       Current: {setting.mode === "full" ? "Full Auto" : setting.mode === "semi" ? "Semi-Auto" : "Manual"}
                     </Badge>

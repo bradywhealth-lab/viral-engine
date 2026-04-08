@@ -7,13 +7,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME ?? "Viral Engine Views",
-  description: "Mine trends. Create content. Dominate your niche.",
+  description: "Track trends, create content, and organize campaigns in one reusable workspace.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="bg-[#0f1623] text-[#f0f4ff] antialiased">
+      <body className="bg-[#f7f1e6] text-[#2f2418] antialiased">
         <ProfileProvider>
           <ConditionalShell>{children}</ConditionalShell>
         </ProfileProvider>

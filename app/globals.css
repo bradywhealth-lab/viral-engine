@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -10,17 +10,17 @@
 
 html {
   background:
-    radial-gradient(circle at top, rgba(79, 142, 247, 0.08), transparent 32%),
-    linear-gradient(180deg, #0f1623 0%, #0f1623 100%);
+    radial-gradient(circle at top, rgba(214, 164, 61, 0.08), transparent 32%),
+    linear-gradient(180deg, #fdf8ef 0%, #f7f1e6 100%);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent 30%),
-    linear-gradient(180deg, #141e2e 0%, #0f1623 100%);
-  color: #f0f4ff;
+    radial-gradient(circle at top right, rgba(240, 201, 106, 0.08), transparent 30%),
+    linear-gradient(180deg, #fffaf2 0%, #f7f1e6 100%);
+  color: #2f2418;
   font-family: "Avenir Next", "Segoe UI", sans-serif;
 }
 
@@ -43,5 +43,5 @@ textarea {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(136, 153, 187, 0.3);
+  background: rgba(138, 122, 103, 0.35);
 }

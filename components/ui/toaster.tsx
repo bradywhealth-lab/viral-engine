@@ -3,5 +3,5 @@
 import { Toaster as Sonner } from "sonner";
 
 export function Toaster() {
-  return <Sonner position="top-right" theme="dark" richColors closeButton />;
+  return <Sonner position="top-right" theme="light" richColors closeButton />;
 }

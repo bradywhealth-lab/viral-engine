@@ -42,8 +42,8 @@ export function TrendScannerPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold text-white">Trend Scanner</h1>
-        <p className="mt-1 text-sm text-[#8899bb]">Search by keyword, niche, and platform to capture current momentum and convert it into ideas.</p>
+        <h1 className="text-3xl font-semibold text-[#2f2418]">Trend Scanner</h1>
+        <p className="mt-1 text-sm text-[#8a7a67]">Search by keyword, niche, and platform to capture current momentum and convert it into ideas.</p>
       </div>
 
       <Card>
@@ -82,10 +82,10 @@ export function TrendScannerPage() {
               <CardDescription>Calculated from Firecrawl result volume for the scan query.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="rounded-3xl border border-[#1e2d45] bg-[#0f1623]/80 p-6">
-                <div className="text-6xl font-semibold text-white">{result.trendScore}</div>
-                <div className="mt-4 h-4 overflow-hidden rounded-full bg-[#1a2540]">
-                  <div className="h-full rounded-full bg-gradient-to-r from-[#4f8ef7] via-[#38bdf8] to-[#4f8ef7]" style={{ width: `${result.trendScore}%` }} />
+              <div className="rounded-3xl border border-[#e2d6c2] bg-[#fffaf2] p-6">
+                <div className="text-6xl font-semibold text-[#2f2418]">{result.trendScore}</div>
+                <div className="mt-4 h-4 overflow-hidden rounded-full bg-[#f3e8d4]">
+                  <div className="h-full rounded-full bg-gradient-to-r from-[#d6a43d] via-[#f0c96a] to-[#d6a43d]" style={{ width: `${result.trendScore}%` }} />
                 </div>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {result.hashtags.map((tag) => (
@@ -105,12 +105,12 @@ export function TrendScannerPage() {
             </CardHeader>
             <CardContent className="grid gap-4">
               {result.ideas.map((idea) => (
-                <div key={idea.title} className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/70 p-4">
+                <div key={idea.title} className="rounded-2xl border border-[#e2d6c2] bg-[#fffaf2] p-4">
                   <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-semibold text-white">{idea.title}</h3>
+                    <h3 className="font-semibold text-[#2f2418]">{idea.title}</h3>
                     <Badge variant="secondary">{idea.estimatedReach}</Badge>
                   </div>
-                  <p className="mt-3 text-sm text-[#f0f4ff]/80">{idea.caption}</p>
+                  <p className="mt-3 text-sm text-[#4c4033]">{idea.caption}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {idea.hashtags.map((tag) => (
                       <Badge key={tag} variant="outline">

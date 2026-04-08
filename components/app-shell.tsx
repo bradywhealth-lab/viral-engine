@@ -13,10 +13,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0f1623] text-[#f0f4ff]">
+    <div className="min-h-screen bg-[#f7f1e6] text-[#2f2418]">
       <Toaster />
       <div className="mx-auto flex min-h-screen w-full max-w-[1600px]">
-        <aside className="hidden w-80 border-r border-[#1e2d45] bg-[#141e2e]/80 px-5 py-6 lg:flex lg:flex-col">
+        <aside className="hidden w-80 border-r border-[#e2d6c2] bg-[#fffaf2]/90 px-5 py-6 lg:flex lg:flex-col">
           <SidebarBrand />
           <div className="mt-6">
             <ProfileSwitcher />
@@ -27,14 +27,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </aside>
 
         <div className="flex min-h-screen flex-1 flex-col">
-          <header className="sticky top-0 z-30 flex items-center justify-between border-b border-[#1e2d45] bg-[#0f1623]/90 px-4 py-4 backdrop-blur md:px-6 lg:hidden">
+          <header className="sticky top-0 z-30 flex items-center justify-between border-b border-[#e2d6c2] bg-[#fffaf2]/90 px-4 py-4 backdrop-blur md:px-6 lg:hidden">
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="icon">
                   <Menu className="h-5 w-5" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="left-0 top-0 h-screen max-w-sm translate-x-0 translate-y-0 rounded-none border-r border-[#1e2d45]">
+              <DialogContent className="left-0 top-0 h-screen max-w-sm translate-x-0 translate-y-0 rounded-none border-r border-[#e2d6c2]">
                 <SidebarBrand />
                 <div className="mt-6">
                   <ProfileSwitcher />
@@ -45,8 +45,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </DialogContent>
             </Dialog>
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-[#8899bb]">Dashboard</p>
-              <p className="font-semibold text-[#f0f4ff]">{process.env.NEXT_PUBLIC_APP_NAME ?? "Viral Engine Views"}</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-[#8a7a67]">Dashboard</p>
+              <p className="font-semibold text-[#2f2418]">{process.env.NEXT_PUBLIC_APP_NAME ?? "Viral Engine Views"}</p>
             </div>
           </header>
 

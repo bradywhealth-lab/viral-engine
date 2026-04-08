@@ -53,8 +53,8 @@ export function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold text-white">Analytics</h1>
-        <p className="mt-1 text-sm text-[#8899bb]">Mock dashboard signals for views, engagement, posting windows, and format performance.</p>
+        <h1 className="text-3xl font-semibold text-[#2f2418]">Analytics</h1>
+        <p className="mt-1 text-sm text-[#8a7a67]">Mock dashboard signals for views, engagement, posting windows, and format performance.</p>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
@@ -95,11 +95,11 @@ export function AnalyticsPage() {
             ) : (
               <div className="grid gap-4 md:grid-cols-3">
                 {Object.entries(bestTimes).map(([platform, times]) => (
-                  <div key={platform} className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/70 p-5">
-                    <p className="text-sm font-medium capitalize text-white">{platform}</p>
-                    <div className="mt-4 space-y-2 text-sm text-[#f0f4ff]/80">
+                  <div key={platform} className="rounded-2xl border border-[#e2d6c2] bg-[#fffaf2] p-5">
+                    <p className="text-sm font-medium capitalize text-[#2f2418]">{platform}</p>
+                    <div className="mt-4 space-y-2 text-sm text-[#4c4033]">
                       {times.map((time) => (
-                        <div key={time} className="rounded-xl bg-[#141e2e] px-3 py-2">
+                        <div key={time} className="rounded-xl bg-[#f3e8d4] px-3 py-2">
                           {time}
                         </div>
                       ))}
@@ -118,9 +118,9 @@ export function AnalyticsPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {contentTypeData.map((item) => (
-              <div key={item.type} className="rounded-2xl border border-[#1e2d45] bg-[#0f1623]/70 p-4">
-                <p className="font-medium text-white">{item.type}</p>
-                <p className="mt-1 text-sm text-[#8899bb]">{item.score}</p>
+              <div key={item.type} className="rounded-2xl border border-[#e2d6c2] bg-[#fffaf2] p-4">
+                <p className="font-medium text-[#2f2418]">{item.type}</p>
+                <p className="mt-1 text-sm text-[#8a7a67]">{item.score}</p>
               </div>
             ))}
           </CardContent>
