@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-
+import { usePathname } from "next/navigation";
 import type { ProfileSummary } from "@/lib/types";
 
 type ProfileContextValue = {
@@ -14,16 +14,24 @@ type ProfileContextValue = {
 };
 
 const ProfileContext = createContext<ProfileContextValue | null>(null);
-
 export function ProfileProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isAuthRoute = pathname === "/auth" || pathname.startsWith("/auth/");
   const [profiles, setProfiles] = useState<ProfileSummary[]>([]);
   const [selectedProfileId, setSelectedProfileIdState] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const refreshProfiles = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/profiles", { cache: "no-store" });
+ const refreshProfiles = useCallback(async () => {
+  if (isAuthRoute) {
+    setProfiles([]);
+    setSelectedProfileIdState("");
+    setIsLoading(false);
+    return;
+  }
+
+  setIsLoading(true);
+  try {
+    const response = await fetch("/api/profiles", { cache: "no-store" });
       const payload: unknown = await response.json();
       const data = Array.isArray(payload) ? (payload as ProfileSummary[]) : [];
       setProfiles(data);
@@ -33,7 +41,9 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       }
 
       const storedId = window.localStorage.getItem("selectedProfileId");
-      const nextId = data.some((profile) => profile.id === storedId) ? storedId ?? "" : data[0]?.id ?? "";
+      const nextId = data.some((profile) => profile.id === storedId)
+        ? storedId ?? ""
+        : data[0]?.id ?? "";
       setSelectedProfileIdState(nextId);
       if (nextId) window.localStorage.setItem("selectedProfileId", nextId);
       if (!nextId) window.localStorage.removeItem("selectedProfileId");
@@ -45,7 +55,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [isAuthRoute]);
 
   useEffect(() => {
     void refreshProfiles();
