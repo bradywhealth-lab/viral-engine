@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { useProfile } from "@/components/profile-provider";
@@ -134,6 +135,7 @@ export function TrendScannerPage() {
   const [niche, setNiche] = useState("Sports Cards");
   const [platform, setPlatform] = useState("tiktok");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<TrendScanResponse | null>(null);
 
   const selectedPlatformLabel = useMemo(() => formatPlatformName(platform), [platform]);
@@ -141,6 +143,7 @@ export function TrendScannerPage() {
   const runScan = async (targetPlatform = platform) => {
     if (!selectedProfile) return;
     setLoading(true);
+    setError(null);
     try {
       const response = await fetch("/api/trends/scan", {
         method: "POST",
@@ -152,8 +155,15 @@ export function TrendScannerPage() {
           profileId: selectedProfile.id,
         }),
       });
-      setResult((await response.json()) as TrendScanResponse);
+      const payload = (await response.json()) as TrendScanResponse & { error?: string };
+      if (!response.ok) {
+        throw new Error(payload.error ?? "Failed to scan trends");
+      }
+      setResult(payload);
       setPlatform(targetPlatform);
+    } catch (scanError) {
+      setError(scanError instanceof Error ? scanError.message : "Failed to scan trends");
+      setResult(null);
     } finally {
       setLoading(false);
     }
@@ -165,6 +175,21 @@ export function TrendScannerPage() {
         <h1 className="text-3xl font-semibold text-[#2f2418]">Trend Scanner</h1>
         <p className="mt-1 text-sm text-[#8a7a67]">Mine live public viral signals from TikTok, Instagram, YouTube, and Twitter/X, then turn them into content angles you can ship fast.</p>
       </div>
+
+      {!selectedProfile ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Before you scan trends</CardTitle>
+            <CardDescription>You need one active profile so scans, saved content, and alerts all attach to the right workspace.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="text-sm text-[#6f6254]">Create a profile from the sidebar, then come back here to run your first scan.</div>
+            <Button asChild>
+              <Link href="/help">Open help guide</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
 
       <Card>
         <CardHeader>
@@ -210,6 +235,8 @@ export function TrendScannerPage() {
           </div>
         </CardContent>
       </Card>
+
+      {error ? <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
       {loading ? (
         <Skeleton className="h-[34rem] w-full" />
@@ -296,7 +323,8 @@ export function TrendScannerPage() {
                         size="sm"
                         onClick={async () => {
                           if (!selectedProfile) return;
-                          await fetch("/api/content", {
+                          setError(null);
+                          const response = await fetch("/api/content", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
@@ -308,6 +336,10 @@ export function TrendScannerPage() {
                               status: "draft",
                             }),
                           });
+                          const payload = (await response.json()) as { error?: string };
+                          if (!response.ok) {
+                            setError(payload.error ?? "Failed to save content idea");
+                          }
                         }}
                       >
                         Save to Queue

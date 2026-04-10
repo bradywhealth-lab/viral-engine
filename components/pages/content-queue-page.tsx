@@ -1,6 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { WandSparkles } from "lucide-react";
 
@@ -35,13 +36,29 @@ export function ContentQueuePage() {
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const loadContent = useCallback(async () => {
-    if (!selectedProfileId) return;
+    if (!selectedProfileId) {
+      setItems([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
-    const response = await fetch(`/api/content?profileId=${selectedProfileId}`, { cache: "no-store" });
-    setItems((await response.json()) as ContentItem[]);
-    setLoading(false);
+    try {
+      const response = await fetch(`/api/content?profileId=${selectedProfileId}`, { cache: "no-store" });
+      const payload = (await response.json()) as ContentItem[] | { error?: string };
+      if (!response.ok) {
+        throw new Error((payload as { error?: string }).error ?? "Failed to load content");
+      }
+      setItems(Array.isArray(payload) ? payload : []);
+    } catch (loadError) {
+      setError(loadError instanceof Error ? loadError.message : "Failed to load content");
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   }, [selectedProfileId]);
 
   useEffect(() => {
@@ -53,6 +70,7 @@ export function ContentQueuePage() {
   const generateIdeas = async () => {
     if (!selectedProfile) return;
     setGenerating(true);
+    setError(null);
     try {
       const response = await fetch("/api/content/generate", {
         method: "POST",
@@ -65,7 +83,14 @@ export function ContentQueuePage() {
           tone,
         }),
       });
-      setIdeas((await response.json()) as ContentIdea[]);
+      const payload = (await response.json()) as ContentIdea[] | { error?: string };
+      if (!response.ok) {
+        throw new Error((payload as { error?: string }).error ?? "Failed to generate content ideas");
+      }
+      setIdeas(Array.isArray(payload) ? payload : []);
+    } catch (generationError) {
+      setIdeas([]);
+      setError(generationError instanceof Error ? generationError.message : "Failed to generate content ideas");
     } finally {
       setGenerating(false);
     }
@@ -73,7 +98,8 @@ export function ContentQueuePage() {
 
   const saveIdea = async (idea: ContentIdea) => {
     if (!selectedProfileId) return;
-    await fetch("/api/content", {
+    setError(null);
+    const response = await fetch("/api/content", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -85,6 +111,11 @@ export function ContentQueuePage() {
         status: "draft",
       }),
     });
+    const payload = (await response.json()) as { error?: string };
+    if (!response.ok) {
+      setError(payload.error ?? "Failed to save content idea");
+      return;
+    }
     await loadContent();
   };
 
@@ -97,6 +128,23 @@ export function ContentQueuePage() {
         </div>
         {selectedProfileId ? <ContentFormDrawer profileId={selectedProfileId} onCreated={loadContent} /> : null}
       </div>
+
+      {!selectedProfile ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Before you build content</CardTitle>
+            <CardDescription>Select or create a profile first so generated ideas and saved drafts have a workspace.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="text-sm text-[#6f6254]">Use the help guide if you want the fastest path through setup and first actions.</div>
+            <Button asChild>
+              <Link href="/help">Open help guide</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {error ? <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
       <Card>
         <CardHeader>
