@@ -94,7 +94,7 @@ export function ResearchPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold text-[#2f2418]">Research</h1>
-        <p className="mt-1 text-sm text-[#8a7a67]">Discover untapped niches and find sports card auction opportunities.</p>
+        <p className="mt-1 text-sm text-[#8a7a67]">Discover untapped niches and find content opportunities in your space.</p>
       </div>
 
       <Tabs defaultValue="niches">

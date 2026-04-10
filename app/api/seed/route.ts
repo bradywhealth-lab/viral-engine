@@ -3,11 +3,14 @@ import { NextResponse } from "next/server";
 import { getFallbackProfiles } from "@/lib/default-data";
 import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getPrisma } from "@/lib/prisma";
+import { requireAuth, AuthError } from "@/lib/api-auth";
 
 export async function POST() {
   try {
+    const user = await requireAuth();
     const prisma = await getPrisma();
     const profiles = await prisma.profile.findMany({
+      where: { userId: user.userId },
       orderBy: { createdAt: "asc" },
       include: {
         _count: {
@@ -23,6 +26,10 @@ export async function POST() {
     return NextResponse.json(profiles);
   } catch (error) {
     console.error(error);
+
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     if (isDatabaseUnavailable(error)) {
       return NextResponse.json(getFallbackProfiles(), {

@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getPrisma } from "@/lib/prisma";
+import { requireAuth, AuthError } from "@/lib/api-auth";
+import { verifyProfileOwnership } from "@/lib/profile-ownership";
 
 const contentSchema = z.object({
   profileId: z.string().min(1),
@@ -18,18 +20,35 @@ const contentSchema = z.object({
 
 export async function GET(request: Request) {
   try {
+    const user = await requireAuth();
     const prisma = await getPrisma();
     const { searchParams } = new URL(request.url);
     const profileId = searchParams.get("profileId");
 
+    // Get user's profile IDs for scoping
+    const userProfiles = await prisma.profile.findMany({
+      where: { userId: user.userId },
+      select: { id: true },
+    });
+    const userProfileIds = userProfiles.map((p) => p.id);
+
     const content = await prisma.contentItem.findMany({
-      where: profileId ? { profileId } : undefined,
+      where: {
+        profileId: profileId
+          ? userProfileIds.includes(profileId) ? profileId : "__none__"
+          : { in: userProfileIds },
+      },
       orderBy: [{ scheduledAt: "asc" }, { createdAt: "desc" }],
     });
 
     return NextResponse.json(content);
   } catch (error) {
     console.error(error);
+
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     if (isDatabaseUnavailable(error)) {
       return NextResponse.json([], { headers: { "x-data-source": "fallback" } });
     }
@@ -39,7 +58,14 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth();
     const body = contentSchema.parse(await request.json());
+
+    const owns = await verifyProfileOwnership(body.profileId, user.userId);
+    if (!owns) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
     const prisma = await getPrisma();
     const content = await prisma.contentItem.create({
       data: {
@@ -52,6 +78,11 @@ export async function POST(request: Request) {
     return NextResponse.json(content, { status: 201 });
   } catch (error) {
     console.error(error);
+
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     if (isDatabaseUnavailable(error)) {
       return NextResponse.json(
         { error: "Database unavailable; content was not saved." },

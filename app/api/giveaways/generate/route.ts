@@ -4,6 +4,8 @@ import { z } from "zod";
 import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getOpenAI } from "@/lib/openai";
 import { getPrisma } from "@/lib/prisma";
+import { requireAuth, AuthError } from "@/lib/api-auth";
+import { verifyProfileOwnership } from "@/lib/profile-ownership";
 
 const schema = z.object({
   profileId: z.string().min(1),
@@ -22,7 +24,14 @@ const resultSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth();
     const body = schema.parse(await request.json());
+
+    const owns = await verifyProfileOwnership(body.profileId, user.userId);
+    if (!owns) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
     const prisma = await getPrisma();
     const openai = getOpenAI();
     const completion = await openai.chat.completions.create({

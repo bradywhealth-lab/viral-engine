@@ -75,7 +75,7 @@ export function ContentFormDrawer({ profileId, onCreated }: ContentFormDrawerPro
             <Label htmlFor="hashtags">Hashtags</Label>
             <Input
               id="hashtags"
-              placeholder="sportscards, boxbreak, rookiewatch"
+              placeholder="viral, trending, niche"
               value={hashtags}
               onChange={(event) => setHashtags(event.target.value)}
             />

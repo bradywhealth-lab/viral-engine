@@ -4,9 +4,9 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Too
 
 type ViewsDatum = {
   day: string;
-  KingCards: number;
-  ChefsCorner: number;
-  BDUBB: number;
+  ProfileA: number;
+  ProfileB: number;
+  ProfileC: number;
 };
 
 type EngagementDatum = {
@@ -22,9 +22,9 @@ export function ViewsChart({ data }: { data: ViewsDatum[] }) {
         <XAxis dataKey="day" stroke="#71717a" />
         <YAxis stroke="#71717a" />
         <Tooltip />
-        <Line type="monotone" dataKey="KingCards" stroke="#f59e0b" strokeWidth={2} dot={false} />
-        <Line type="monotone" dataKey="ChefsCorner" stroke="#10b981" strokeWidth={2} dot={false} />
-        <Line type="monotone" dataKey="BDUBB" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="ProfileA" stroke="#f59e0b" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="ProfileB" stroke="#10b981" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="ProfileC" stroke="#8b5cf6" strokeWidth={2} dot={false} />
       </LineChart>
     </ResponsiveContainer>
   );

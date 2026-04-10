@@ -204,6 +204,13 @@ export function AccountsPage() {
             <Skeleton key={i} className="h-64 w-full" />
           ))}
         </div>
+      ) : accounts.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center p-12 text-center">
+            <p className="text-lg font-medium text-[#2f2418]">No accounts yet</p>
+            <p className="mt-2 text-sm text-[#8a7a67]">Click &ldquo;Add Account&rdquo; above to create your first social media account.</p>
+          </CardContent>
+        </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {accounts.map((account) => (

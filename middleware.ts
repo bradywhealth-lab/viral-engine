@@ -7,6 +7,7 @@ export function middleware(request: NextRequest) {
   // Allow auth page, API routes, and Next.js internals
   if (
     pathname === "/auth" ||
+    pathname.startsWith("/auth/") ||
     pathname.startsWith("/api/") ||
     pathname.startsWith("/_next/") ||
     pathname === "/favicon.ico"
@@ -14,9 +15,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const auth = request.cookies.get("vev-auth");
-  if (!auth || auth.value !== "1") {
-    return NextResponse.redirect(new URL("/auth", request.url));
+  // Check for JWT session cookie
+  const session = request.cookies.get("vev-session");
+  if (!session?.value) {
+    // Fallback: also check legacy cookie for backward compat during transition
+    const legacyAuth = request.cookies.get("vev-auth");
+    if (!legacyAuth || legacyAuth.value !== "1") {
+      return NextResponse.redirect(new URL("/auth", request.url));
+    }
   }
 
   return NextResponse.next();

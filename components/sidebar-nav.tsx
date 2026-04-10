@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { BarChart3, Flame, Gift, LayoutDashboard, Megaphone, Newspaper, Users2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { BarChart3, Flame, Gift, LayoutDashboard, LogOut, Megaphone, Newspaper, Users2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -11,7 +11,6 @@ const navItems = [
   { href: "/content", label: "Content Queue", icon: Newspaper },
   { href: "/trends", label: "Trend Scanner", icon: BarChart3 },
   { href: "/accounts", label: "Accounts", icon: Users2 },
-  { href: "/cards", label: "Cards", icon: Flame },
   { href: "/giveaways", label: "Giveaways", icon: Gift },
   { href: "/campaigns", label: "Campaigns", icon: Megaphone },
 ];
@@ -33,9 +32,17 @@ export function SidebarBrand() {
 
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await fetch("/api/auth/signout", { method: "POST" });
+    localStorage.removeItem("vev-auth");
+    router.push("/auth");
+  };
 
   return (
-    <nav className="space-y-2">
+    <nav className="flex h-full flex-col">
+    <div className="space-y-2 flex-1">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.href;
@@ -66,6 +73,18 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           </Link>
         );
       })}
+    </div>
+    <div className="mt-4 border-t border-[#e2d6c2] pt-4">
+      <button
+        onClick={handleSignOut}
+        className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-[#6f6254] transition-all hover:bg-white/70 hover:text-[#2f2418]"
+      >
+        <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#e6dcc9] bg-[#fffaf2] text-[#8a7a67]">
+          <LogOut className="h-4 w-4" />
+        </span>
+        <span>Sign Out</span>
+      </button>
+    </div>
     </nav>
   );
 }

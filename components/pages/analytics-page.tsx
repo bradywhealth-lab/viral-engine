@@ -8,9 +8,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const viewData = Array.from({ length: 30 }).map((_, index) => ({
   day: `${index + 1}`,
-  KingCards: 1200 + index * 95,
-  ChefsCorner: 900 + index * 65,
-  BDUBB: 1400 + index * 110,
+  ProfileA: 1200 + index * 95,
+  ProfileB: 900 + index * 65,
+  ProfileC: 1400 + index * 110,
 }));
 
 const engagementData = [
