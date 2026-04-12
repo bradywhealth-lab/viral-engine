@@ -46,6 +46,7 @@ export function CardsPage() {
   const [giveawayLoading, setGiveawayLoading] = useState(false);
   const [result, setResult] = useState<CardSearchResult | null>(null);
   const [giveaway, setGiveaway] = useState<GiveawayResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <div className="space-y-6">
@@ -67,6 +68,7 @@ export function CardsPage() {
           <Button
             onClick={async () => {
               setSearchLoading(true);
+              setError(null);
               try {
                 const response = await fetch("/api/cards/search", {
                   method: "POST",
@@ -78,7 +80,14 @@ export function CardsPage() {
                     grade: Number(grade),
                   }),
                 });
-                setResult((await response.json()) as CardSearchResult);
+                const payload = (await response.json()) as CardSearchResult & { error?: string };
+                if (!response.ok) {
+                  throw new Error(payload.error ?? "Failed to search listings");
+                }
+                setResult(payload);
+              } catch (searchError) {
+                setResult(null);
+                setError(searchError instanceof Error ? searchError.message : "Failed to search listings");
               } finally {
                 setSearchLoading(false);
               }
@@ -89,6 +98,8 @@ export function CardsPage() {
           </Button>
         </CardContent>
       </Card>
+
+      {error ? <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
       {searchLoading ? (
         <Skeleton className="h-64 w-full" />
@@ -169,6 +180,7 @@ export function CardsPage() {
               onClick={async () => {
                 if (!selectedProfile) return;
                 setGiveawayLoading(true);
+                setError(null);
                 try {
                   const response = await fetch("/api/giveaways/generate", {
                     method: "POST",
@@ -180,7 +192,14 @@ export function CardsPage() {
                       platform: selectedProfile.platforms[0] ?? "instagram",
                     }),
                   });
-                  setGiveaway((await response.json()) as GiveawayResult);
+                  const payload = (await response.json()) as GiveawayResult & { error?: string };
+                  if (!response.ok) {
+                    throw new Error(payload.error ?? "Failed to generate giveaway copy");
+                  }
+                  setGiveaway(payload);
+                } catch (giveawayError) {
+                  setGiveaway(null);
+                  setError(giveawayError instanceof Error ? giveawayError.message : "Failed to generate giveaway copy");
                 } finally {
                   setGiveawayLoading(false);
                 }

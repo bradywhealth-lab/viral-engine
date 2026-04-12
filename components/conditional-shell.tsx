@@ -1,49 +1,48 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { AppShell } from "@/components/app-shell";
 
 export function ConditionalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [checked, setChecked] = useState(false);
+  const isAuthRoute = useMemo(() => pathname === "/auth" || pathname.startsWith("/auth/"), [pathname]);
+  const [checked, setChecked] = useState(isAuthRoute);
 
   useEffect(() => {
-    if (pathname === "/auth" || pathname.startsWith("/auth/")) {
-      setChecked(true);
+    if (isAuthRoute) {
       return;
     }
 
-    // Verify session via API
-    fetch("/api/auth/me")
+    let cancelled = false;
+
+    void fetch("/api/auth/me")
       .then((res) => {
+        if (cancelled) return;
+
         if (res.ok) {
           localStorage.setItem("vev-auth", "1");
           setChecked(true);
-        } else {
-          // Also check legacy localStorage flag (middleware handles the real check)
-          const authFlag = localStorage.getItem("vev-auth");
-          if (!authFlag) {
-            router.replace("/auth");
-          } else {
-            setChecked(true);
-          }
+          return;
         }
+
+        localStorage.removeItem("vev-auth");
+        router.replace("/auth");
       })
       .catch(() => {
-        // Network error — fall back to localStorage check
-        const authFlag = localStorage.getItem("vev-auth");
-        if (!authFlag) {
-          router.replace("/auth");
-        } else {
-          setChecked(true);
-        }
+        if (cancelled) return;
+        localStorage.removeItem("vev-auth");
+        router.replace("/auth");
       });
-  }, [pathname, router]);
 
-  if (!checked) return null;
-  if (pathname === "/auth" || pathname.startsWith("/auth/")) return <>{children}</>;
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthRoute, router]);
+
+  if (!isAuthRoute && !checked) return null;
+  if (isAuthRoute) return <>{children}</>;
   return <AppShell>{children}</AppShell>;
 }

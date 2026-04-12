@@ -60,47 +60,53 @@ export async function POST(request: Request) {
     const sounds = Array.from(new Set(platformResults.flatMap((result) => result.sounds))).slice(0, 6);
     const postingWindows = Array.from(new Set(platformResults.flatMap((result) => result.postingWindows))).slice(0, 4);
 
-    const openai = getOpenAI();
-    const ideaCompletion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content:
-            "Return JSON with an `ideas` array of 4 actionable viral content opportunities. Each idea must include title, caption, hashtags, contentType, estimatedReach, platform, hook, format, recommendedSound, and bestPostingWindow. Base ideas only on the supplied mined trend evidence.",
-        },
-        {
-          role: "user",
-          content: JSON.stringify({
-            keyword: body.keyword,
-            niche: body.niche,
-            requestedPlatform: body.platform,
-            minedTrendSummary: platformResults.map((result) => ({
-              platform: result.platform,
-              trendScore: result.trendScore,
-              hashtags: result.hashtags,
-              sounds: result.sounds,
-              topFormats: result.topFormats,
-              postingWindows: result.postingWindows,
-              avgViews: result.engagement.avgViews,
-              avgLikes: result.engagement.avgLikes,
-              examples: result.examples.map((example) => ({
-                title: example.title,
-                format: example.format,
-                views: example.views,
-                likes: example.likes,
-                hashtags: example.hashtags,
-                sound: example.sound,
-                recencyLabel: example.recencyLabel,
-              })),
-            })),
-          }),
-        },
-      ],
-    });
+    let ideas = ideaSchema.parse('{"ideas":[]}').ideas;
 
-    const ideas = ideaSchema.parse(JSON.parse(ideaCompletion.choices[0]?.message?.content ?? '{"ideas":[]}')).ideas;
+    try {
+      const openai = getOpenAI();
+      const ideaCompletion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content:
+              "Return JSON with an `ideas` array of 4 actionable viral content opportunities. Each idea must include title, caption, hashtags, contentType, estimatedReach, platform, hook, format, recommendedSound, and bestPostingWindow. Base ideas only on the supplied mined trend evidence.",
+          },
+          {
+            role: "user",
+            content: JSON.stringify({
+              keyword: body.keyword,
+              niche: body.niche,
+              requestedPlatform: body.platform,
+              minedTrendSummary: platformResults.map((result) => ({
+                platform: result.platform,
+                trendScore: result.trendScore,
+                hashtags: result.hashtags,
+                sounds: result.sounds,
+                topFormats: result.topFormats,
+                postingWindows: result.postingWindows,
+                avgViews: result.engagement.avgViews,
+                avgLikes: result.engagement.avgLikes,
+                examples: result.examples.map((example) => ({
+                  title: example.title,
+                  format: example.format,
+                  views: example.views,
+                  likes: example.likes,
+                  hashtags: example.hashtags,
+                  sound: example.sound,
+                  recencyLabel: example.recencyLabel,
+                })),
+              })),
+            }),
+          },
+        ],
+      });
+
+      ideas = ideaSchema.parse(JSON.parse(ideaCompletion.choices[0]?.message?.content ?? '{"ideas":[]}')).ideas;
+    } catch (ideaError) {
+      console.error("Failed to generate AI trend ideas", ideaError);
+    }
 
     let alert: TrendAlert | null = null;
     let usedFallback = false;
