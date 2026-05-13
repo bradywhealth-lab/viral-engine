@@ -2,15 +2,33 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
 
+/**
+ * Returns true if the HTTP method is not in the safe read-only set.
+ * Safe methods: GET, HEAD, OPTIONS.
+ */
 export function isUnsafeMethod(method: string): boolean {
   return !SAFE_METHODS.has(method.toUpperCase())
 }
 
+/**
+ * Enforces same-origin policy for unsafe (state-changing) HTTP methods.
+ * Compares the request Origin header against the server's own origin.
+ * Returns a 403 response for cross-origin or malformed origins, null if allowed.
+ */
 export function enforceSameOrigin(request: NextRequest): NextResponse | null {
   if (!isUnsafeMethod(request.method)) return null
   const origin = request.headers.get('origin')
   if (!origin) return null
-  const requestOrigin = new URL(origin).origin
+  let requestOrigin: string
+  try {
+    requestOrigin = new URL(origin).origin
+  } catch {
+    // Malformed Origin header — treat as cross-site and block
+    return NextResponse.json(
+      { error: 'Cross-site request blocked' },
+      { status: 403 },
+    )
+  }
   const selfOrigin = request.nextUrl.origin
   if (requestOrigin === selfOrigin) return null
   return NextResponse.json(
@@ -19,6 +37,10 @@ export function enforceSameOrigin(request: NextRequest): NextResponse | null {
   )
 }
 
+/**
+ * Applies a comprehensive set of security headers to every response.
+ * Includes CSP, HSTS (production only), clickjacking protection, and more.
+ */
 export function applySecurityHeaders(request: NextRequest, response: NextResponse): NextResponse {
   const isApiRoute = request.nextUrl.pathname.startsWith('/api/')
 
