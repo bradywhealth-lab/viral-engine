@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.env
+.env.local
+*.log
+tsconfig.tsbuildinfo
+public_html-viralengine.zip
+viral-views-hostinger
+exports
