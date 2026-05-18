@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BarChart3, Flame, Gift, LayoutDashboard, LogOut, Megaphone, Newspaper, Users2 } from "lucide-react";
+import { BarChart3, Bot, CreditCard, Flame, Gift, HelpCircle, LayoutDashboard, LineChart, LogOut, Megaphone, Newspaper, Search, Settings, Users2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,12 @@ const navItems = [
   { href: "/accounts", label: "Accounts", icon: Users2 },
   { href: "/giveaways", label: "Giveaways", icon: Gift },
   { href: "/campaigns", label: "Campaigns", icon: Megaphone },
+  { href: "/analytics", label: "Analytics", icon: LineChart },
+  { href: "/research", label: "Research", icon: Search },
+  { href: "/cards", label: "Card Tracker", icon: CreditCard },
+  { href: "/ai", label: "AI Assistant", icon: Bot },
+  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/help", label: "Help", icon: HelpCircle },
 ];
 
 export function SidebarBrand() {
