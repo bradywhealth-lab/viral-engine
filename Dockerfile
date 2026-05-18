@@ -14,7 +14,7 @@ ENV DATABASE_URL=postgresql://placeholder:placeholder@placeholder:5432/placehold
 ENV VEV_ACCESS_CODE=build-placeholder
 ENV OPENAI_API_KEY=build-placeholder
 ENV FIRECRAWL_API_KEY=build-placeholder
-RUN npm run build
+RUN npm run build && mkdir -p public
 
 FROM node:20-alpine AS runner
 WORKDIR /app
