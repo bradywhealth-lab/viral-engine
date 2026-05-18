@@ -9,6 +9,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate
+ENV JWT_SECRET=build-placeholder
+ENV DATABASE_URL=postgresql://placeholder:placeholder@placeholder:5432/placeholder
 RUN npm run build
 
 FROM node:20-alpine AS runner
