@@ -19,9 +19,9 @@ export function enforceSameOrigin(request: NextRequest): NextResponse | null {
   if (!isUnsafeMethod(request.method)) return null
   const origin = request.headers.get('origin')
   if (!origin) return null
-  let requestOrigin: string
+  let requestHost: string
   try {
-    requestOrigin = new URL(origin).origin
+    requestHost = new URL(origin).host
   } catch {
     // Malformed Origin header — treat as cross-site and block
     return NextResponse.json(
@@ -29,8 +29,10 @@ export function enforceSameOrigin(request: NextRequest): NextResponse | null {
       { status: 403 },
     )
   }
-  const selfOrigin = request.nextUrl.origin
-  if (requestOrigin === selfOrigin) return null
+  // X-Forwarded-Host is set by Caddy (and other reverse proxies) and reflects
+  // the public hostname. Fall back to the Next.js-parsed host if not present.
+  const selfHost = request.headers.get('x-forwarded-host') || request.nextUrl.host
+  if (requestHost === selfHost) return null
   return NextResponse.json(
     { error: 'Cross-site request blocked' },
     { status: 403 },
