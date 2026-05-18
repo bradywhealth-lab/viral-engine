@@ -11,6 +11,9 @@ COPY . .
 RUN npx prisma generate
 ENV JWT_SECRET=build-placeholder
 ENV DATABASE_URL=postgresql://placeholder:placeholder@placeholder:5432/placeholder
+ENV VEV_ACCESS_CODE=build-placeholder
+ENV OPENAI_API_KEY=build-placeholder
+ENV FIRECRAWL_API_KEY=build-placeholder
 RUN npm run build
 
 FROM node:20-alpine AS runner
