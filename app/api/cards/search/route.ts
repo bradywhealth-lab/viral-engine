@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { isDatabaseUnavailable } from "@/lib/database-errors";
 import { getPrisma } from "@/lib/prisma";
+import { requireAuth, AuthError } from "@/lib/api-auth";
 
 const schema = z.object({
   player: z.string().min(1),
@@ -19,6 +20,7 @@ function parsePrice(text: string) {
 
 export async function POST(request: Request) {
   try {
+    await requireAuth();
     const body = schema.parse(await request.json());
     const firecrawlResponse = await fetch("https://api.firecrawl.dev/v1/search", {
       method: "POST",
@@ -90,6 +92,9 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error(error);
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json({ error: "Failed to search card listings" }, { status: 500 });
   }
 }

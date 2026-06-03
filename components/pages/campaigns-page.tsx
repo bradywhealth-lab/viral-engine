@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Megaphone, Sparkles, CheckCircle2, Clock, Archive } from "lucide-react";
+import { Megaphone, Sparkles, CheckCircle2, Clock } from "lucide-react";
 import Link from "next/link";
 
 import { useProfile } from "@/components/profile-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type Campaign = {
