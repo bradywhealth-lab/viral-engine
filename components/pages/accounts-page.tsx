@@ -169,11 +169,11 @@ export function AccountsPage() {
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-lg">{profile.name}</CardTitle>
-                      <CardDescription className="mt-1">
+                      <div className="mt-1">
                         <Badge variant="default" className="text-xs">
                           {profile.niche}
                         </Badge>
-                      </CardDescription>
+                      </div>
                     </div>
                     <div className="flex gap-1">
                       {profile.platforms.map((platform) => {
