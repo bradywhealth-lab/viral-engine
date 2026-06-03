@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Flame, HelpCircle, Lightbulb, Megaphone, Newspaper, Search, Settings, TrendingUp, Users2, Zap } from "lucide-react";
+import { Flame, HelpCircle, Lightbulb, Megaphone, Newspaper, Search, Settings, TrendingUp, Users2, Zap } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -112,7 +112,7 @@ export function HelpPage() {
         </div>
         <ol className="space-y-2 text-sm text-[#4c4033]">
           <li className="flex gap-2"><span className="font-semibold text-[#9a7b39]">1.</span> Create a Profile for your niche or brand</li>
-          <li className="flex gap-2"><span className="font-semibold text-[#9a7b39]">2.</span> Run a Trend Scan to find what's viral right now</li>
+          <li className="flex gap-2"><span className="font-semibold text-[#9a7b39]">2.</span> Run a Trend Scan to find what&apos;s viral right now</li>
           <li className="flex gap-2"><span className="font-semibold text-[#9a7b39]">3.</span> Generate content ideas from the scan results</li>
           <li className="flex gap-2"><span className="font-semibold text-[#9a7b39]">4.</span> Review and schedule from the Content Queue</li>
           <li className="flex gap-2"><span className="font-semibold text-[#9a7b39]">5.</span> Use Campaigns to run giveaways and track their status</li>

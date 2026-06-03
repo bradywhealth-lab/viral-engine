@@ -1,4 +1,4 @@
-# Deploy Viral Engine Views on Hostinger VPS
+# Deploy Viral Engine Views on a Linode VPS
 
 ## Root cause that kept it offline
 
@@ -9,12 +9,19 @@ The repo was still documented for Vercel deployment, but the VPS had no active p
 - Node.js 20+
 - PM2 installed on the VPS
 - nginx vhost/proxy configured to forward to the app port
+- A reachable Supabase Postgres database
 - Environment variables present in `/home/deployer/apps/viral-engine/.env`
 
 ## Required environment variables
 
+See `.env.example` for the full list with notes. The app **will not boot without `JWT_SECRET`** (it throws on startup).
+
 ```bash
-DATABASE_URL=postgresql://...
+# Supabase: prefer the session/direct connection on port 5432 (the pg adapter
+# can break against the transaction pooler on 6543 with pgbouncer=true).
+DATABASE_URL=postgresql://postgres.<project-ref>:PASSWORD@aws-1-us-east-1.pooler.supabase.com:5432/postgres?sslmode=require
+JWT_SECRET=          # REQUIRED — generate with: openssl rand -base64 48
+VEV_ACCESS_CODE=     # only if keeping the legacy access-code gate
 OPENAI_API_KEY=sk-...
 FIRECRAWL_API_KEY=fc-...
 NEXT_PUBLIC_APP_NAME=Viral Engine Views
@@ -28,10 +35,16 @@ Run from `/home/deployer/apps/viral-engine`:
 
 ```bash
 npm install
+npx prisma migrate deploy   # provisions/updates the Supabase schema (required on first deploy)
 npm run build
 pm2 start ecosystem.config.js --update-env
 pm2 save
 ```
+
+> **First deploy:** without `prisma migrate deploy` the database has no tables and
+> the app silently runs on empty in-memory fallbacks (nothing persists). Run it
+> again after any schema change. (`npx prisma db push` is an alternative for
+> environments without migration history.)
 
 ## Recommended nginx site
 
@@ -80,5 +93,7 @@ Expected app health response:
 
 - Build fails: run `npm install` and re-run `npm run build`
 - Lint fails: run `npm run lint` and fix reported issues
-- Prisma/runtime issues: verify `DATABASE_URL` in `.env`
+- App won't start / 500 on every request: ensure `JWT_SECRET` is set in `.env`
+- Prisma/runtime issues: verify `DATABASE_URL` in `.env` and that `prisma migrate deploy` has been run
+- Data never persists (always empty): the schema was never applied — run `npx prisma migrate deploy`
 - Site still not public: nginx vhost or DNS is still missing/mispointed

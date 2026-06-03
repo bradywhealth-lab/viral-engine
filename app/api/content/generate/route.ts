@@ -56,6 +56,9 @@ export async function POST(request: Request) {
     return NextResponse.json(parsed.ideas);
   } catch (error) {
     console.error(error);
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json({ error: "Failed to generate content ideas" }, { status: 500 });
   }
 }
